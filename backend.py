@@ -3,23 +3,35 @@ import os
 import random
 import smtplib
 from email.mime.text import MIMEText
-from dotenv import load_dotenv
 from datetime import date
+import streamlit as st
 
-load_dotenv()
+# load .env for local development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
+
+# function to get secrets (Streamlit Cloud + local .env)
+def get_secret(key):
+    if key in st.secrets:        # Streamlit Cloud
+        return st.secrets[key]
+    return os.getenv(key)         # Local .env
 
 # ================= DB CONNECTION =================
 
 def get_db_connection():
     return pymysql.connect(
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT")),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME"),
+        host=get_secret("DB_HOST"),
+        port=int(get_secret("DB_PORT")),
+        user=get_secret("DB_USER"),
+        password=get_secret("DB_PASSWORD"),
+        database=get_secret("DB_NAME"),
         cursorclass=pymysql.cursors.DictCursor,
-        ssl={"ssl": {}}  # required for Aiven
+        ssl={"ssl": {}}
     )
+
 
 # ================= SEND OTP EMAIL =================
 
@@ -42,8 +54,9 @@ def send_otp_email(email):
     conn.close()
 
     # email config from .env
-    sender_email = os.getenv("EMAIL_USER")
-    app_password = os.getenv("EMAIL_PASS")
+    sender_email = get_secret("EMAIL_USER")
+    app_password = get_secret("EMAIL_PASS")
+
 
     msg = MIMEText(f"Your OTP for Smart Expense Guard is: {otp}")
     msg["Subject"] = "Smart Expense Guard - OTP Verification"
