@@ -18,7 +18,7 @@ def get_db_connection():
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME"),
         cursorclass=pymysql.cursors.DictCursor,
-        ssl={"ssl": {}}  # required for Aiven
+        ssl={"ssl": {}}  
     )
 
 # ================= SEND OTP EMAIL =================
@@ -29,7 +29,6 @@ def send_otp_email(email):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # delete old OTP & insert new in single transaction
     cursor.execute("DELETE FROM otp_verification WHERE email=%s", (email,))
     cursor.execute(
         "INSERT INTO otp_verification (email, otp) VALUES (%s, %s)",
@@ -123,7 +122,7 @@ def get_user_expenses(user_id):
     conn.close()
     return data
 
-# ================= TOTAL EXPENSE  (SQL-level SUM — no Python loop) =================
+# ================= TOTAL EXPENSE =================
 
 def get_total_spend(user_id):
     """
