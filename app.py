@@ -14,7 +14,12 @@ from backend import (
     update_expense
 )
 
-st.set_page_config(page_title="Smart Expense Guard", layout="wide")
+st.set_page_config(
+    page_title="Smart Expense Guard",
+    page_icon="💰",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # ------------------- UI THEME --------------------
 st.markdown("""
