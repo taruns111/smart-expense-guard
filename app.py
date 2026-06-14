@@ -14,7 +14,7 @@ from backend import (
     update_expense
 )
 
-st.set_page_config(page_title="Smart Expense Guard", layout="wide")
+st.set_page_config(page_title="Smart Expense Guard", page_icon="💰", layout="wide")
 
 # ------------------- UI THEME --------------------
 st.markdown("""
@@ -32,10 +32,8 @@ h1,h2,h3 { color:#4CAF50; }
 """, unsafe_allow_html=True)
 
 # ================= CACHED DATA FETCH =================
-# FIX: @st.cache_data — DB hit sirf tab hoga jab user_id badlega ya ttl expire hoga.
-# Pehle har Streamlit rerun pe DB call hoti thi — ab nahi hogi.
 
-@st.cache_data(ttl=30)   # 30 sec cache — add/edit/delete ke baad auto-invalidate hoga
+@st.cache_data(ttl=30)   
 def load_expenses(user_id):
     return get_user_expenses(user_id)
 
@@ -81,7 +79,6 @@ else:
     st.sidebar.title("📊 Smart Expense Guard")
     menu = st.sidebar.radio("Menu", ["Dashboard", "Add Expense", "Analytics", "Settings"])
 
-    # FIX: Cached call — sirf ek DB hit per 30 sec
     expenses = load_expenses(user_id)
     df = pd.DataFrame(expenses) if expenses else pd.DataFrame()
 
@@ -94,7 +91,7 @@ else:
         st.title("💰 Dashboard")
 
         if not df.empty:
-            # FIX: today ek baar compute karo, baar baar nahi
+            
             today       = pd.Timestamp.today().normalize()
             month_start = today.replace(day=1)
 
@@ -102,7 +99,7 @@ else:
             month_spend = df[df["expense_date"] >= month_start]["amount"].sum()
             avg_spend   = df["amount"].mean()
 
-            # FIX: total_spend ab df se compute — alag DB call nahi
+            
             total = df["amount"].sum()
 
             col1, col2, col3, col4 = st.columns(4)
@@ -238,7 +235,6 @@ else:
                 fig = px.bar(cat_summary, x="category", y="amount", title="Category-wise Bar Chart")
                 st.plotly_chart(fig, use_container_width=True)
 
-            # FIX: dt.to_period slow hai large df pe — strftime use karo
             df["month"]   = df["expense_date"].dt.strftime("%Y-%m")
             month_summary = df.groupby("month", as_index=False)["amount"].sum().sort_values("month")
 
@@ -263,7 +259,6 @@ else:
             st.session_state.budget = budget
             st.success("Budget Updated ✅")
 
-        # FIX: total ab df se — alag get_total_spend() DB call nahi
         total = df["amount"].sum() if not df.empty else 0.0
         if total > st.session_state.budget:
             st.error(f"⚠️ Budget exceeded! Limit ₹{st.session_state.budget}")
