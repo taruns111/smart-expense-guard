@@ -1,9 +1,11 @@
-# 💰 Smart Expense Guard
+# 💰 Smart Expense Guard 
+Use this Application :- https://smart-expense-guard.streamlit.app
 
 Smart Expense Guard is a secure, full-stack personal expense tracking web application built using Python, Streamlit, and MySQL (Aiven Cloud).  
 It helps users manage daily expenses, analyze spending patterns, and track budgets with OTP-based authentication.
 
 ---
+
 
 ## 🚀 Features
 
