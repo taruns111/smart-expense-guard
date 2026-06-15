@@ -231,7 +231,7 @@ else:
                 fig = px.pie(cat_summary, names="category", values="amount", title="Category-wise Expense")
                 st.plotly_chart(fig, use_container_width=True)
             with col2:
-                fig = px.bar(cat_summary, x="category", y="amount", color="Category", title="Category-wise Bar Chart")
+                fig = px.bar(cat_summary, x="category", y="amount", color="category", title="Category-wise Bar Chart")
                 st.plotly_chart(fig, use_container_width=True)
 
             df["month"]   = df["expense_date"].dt.strftime("%Y-%m")
