@@ -38,7 +38,6 @@ def load_expenses(user_id):
     return get_user_expenses(user_id)
 
 def invalidate_cache(user_id):
-    """Delete ke baad / add ke baad cache clear karo taaki fresh data aaye."""
     load_expenses.clear()
 
 # ================= LOGIN =================
@@ -232,7 +231,7 @@ else:
                 fig = px.pie(cat_summary, names="category", values="amount", title="Category-wise Expense")
                 st.plotly_chart(fig, use_container_width=True)
             with col2:
-                fig = px.bar(cat_summary, x="category", y="amount", title="Category-wise Bar Chart")
+                fig = px.bar(cat_summary, x="category", y="amount", color="Category", title="Category-wise Bar Chart")
                 st.plotly_chart(fig, use_container_width=True)
 
             df["month"]   = df["expense_date"].dt.strftime("%Y-%m")
